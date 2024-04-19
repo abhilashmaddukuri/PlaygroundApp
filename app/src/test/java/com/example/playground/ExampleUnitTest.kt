@@ -1,4 +1,4 @@
-package com.example.coroutineplayground
+package com.example.playground
 
 import org.junit.Test
 

@@ -1,10 +1,10 @@
-**PlaygroundApp** 
+**PlaygroundApp** <br />
 This application is intended to serve as a playground for experimenting with the latest Android components and technologies. Currently, it incorporates Dagger, Navigation Graph, and JetPack Compose. The project is under active development, with plans to integrate Coroutines and Retrofit in the near future.
 
-**Features** 
-**Dagger**: Dependency injection framework for managing dependencies.
-**Navigation Graph**: Utilized for managing navigation flows within the application.
-**JetPack Compose**: Used for building UI with a modern and reactive approach.
+**Features** <br />
+**Dagger**: Dependency injection framework for managing dependencies. <br />
+**Navigation Graph**: Utilized for managing navigation flows within the application. <br />
+**JetPack Compose**: Used for building UI with a modern and reactive approach. <br />
 
 **Planned Features**
 Coroutines: Introduction of Coroutines to manage asynchronous programming tasks efficiently.

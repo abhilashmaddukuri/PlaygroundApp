@@ -1,6 +1,7 @@
 package com.example.playground.shared.dagger
 
 import androidx.lifecycle.ViewModel
+import com.example.playground.animalfacts.viewmodel.AnimalFactsViewModel
 import com.example.playground.home.viewmodel.HomeViewModel
 import com.example.playground.shared.viewmodels.ViewModelKey
 import dagger.Binds
@@ -17,6 +18,13 @@ abstract class PlaygroundViewModelModule {
     @ViewModelKey(HomeViewModel::class)
     abstract fun getHomeViewModel(
         viewModel: HomeViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AnimalFactsViewModel::class)
+    abstract fun getAnimalFactsViewModel(
+        viewModel: AnimalFactsViewModel
     ): ViewModel
 
 }

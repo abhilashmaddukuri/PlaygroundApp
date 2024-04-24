@@ -1,37 +1,34 @@
-package com.example.playground.home.screen
+package com.example.playground.animalfacts.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.playground.home.viewstate.HomeScreenViewState
+import com.example.playground.animalfacts.viewstate.AnimalFactsScreenViewState
 import com.example.playground.shared.ui.theme.PlaygroundTheme
 
 /*
-* Composable Screen for Home Fragment
+* Composable Screen for Animal Facts
 * */
 @Composable
-internal fun HomeScreen(homeScreenViewState: HomeScreenViewState) {
+fun AnimalFactsScreen(animalFactsScreenViewState: AnimalFactsScreenViewState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
     ) {
-        Button(onClick = homeScreenViewState.buttonClick ?: {}) {
-            Text(text = homeScreenViewState.buttonText)
-        }
+        Text(text = animalFactsScreenViewState.text)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun GreetingPreview() {
+fun GreetingPreview() {
     PlaygroundTheme {
-        HomeScreen(HomeScreenViewState("Android", {} ))
+        AnimalFactsScreen(AnimalFactsScreenViewState("Animal Fact"))
     }
 }

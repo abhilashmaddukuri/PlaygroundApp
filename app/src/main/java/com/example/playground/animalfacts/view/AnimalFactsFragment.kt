@@ -1,4 +1,4 @@
-package com.example.playground.home.view
+package com.example.playground.animalfacts.view
 
 import android.content.Context
 import android.os.Bundle
@@ -10,25 +10,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.example.playground.PlaygroundApplication
-import com.example.playground.R
-import com.example.playground.home.screen.HomeScreen
-import com.example.playground.home.viewmodel.HomeViewModel
+import com.example.playground.animalfacts.screen.AnimalFactsScreen
+import com.example.playground.animalfacts.viewmodel.AnimalFactsViewModel
 import com.example.playground.shared.ui.theme.PlaygroundTheme
 import com.example.playground.shared.viewmodels.ViewModelFactory
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class HomeFragment: Fragment() {
+class AnimalFactsFragment: Fragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: HomeViewModel by viewModels { viewModelFactory }
+    private val viewModel: AnimalFactsViewModel by viewModels { viewModelFactory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,8 +37,8 @@ class HomeFragment: Fragment() {
             .apply {
                 setContent {
                     PlaygroundTheme {
-                        val viewState by viewModel.homeScreenViewStateFlow.collectAsState()
-                        HomeScreen(viewState)
+                        val viewState by viewModel.animalFactsScreenViewStateFlow.collectAsState()
+                        AnimalFactsScreen(viewState)
                     }
                 }
             }
@@ -53,18 +46,7 @@ class HomeFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observe()
-    }
-
-    private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToDestinationFlow.collectLatest { destination ->
-                    findNavController().navigate(destination)
-                }
-            }
-        }
-
+        viewModel.onViewCreated()
     }
 }
 

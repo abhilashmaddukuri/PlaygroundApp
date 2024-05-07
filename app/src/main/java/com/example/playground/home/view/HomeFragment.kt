@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.playground.PlaygroundApplication
-import com.example.playground.R
 import com.example.playground.home.screen.HomeScreen
 import com.example.playground.home.viewmodel.HomeViewModel
 import com.example.playground.shared.ui.theme.PlaygroundTheme

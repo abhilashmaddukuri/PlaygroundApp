@@ -3,9 +3,12 @@ package com.example.playground.animalfacts.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playground.animalfacts.viewstate.AnimalFactsScreenViewState
+import com.example.playground.animalfacts.viewstate.BackButtonViewState
 import com.example.playground.dataprovider.AnimalDataProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,10 +23,21 @@ class AnimalFactsViewModel @Inject constructor(
     val animalFactsScreenViewStateFlow: StateFlow<AnimalFactsScreenViewState>
         get() = _animalFactsScreenViewStateFlow
 
+    private val _navigateUpFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val navigateUp: SharedFlow<Unit>
+        get() = _navigateUpFlow
+
 
     private fun buildAnimalFactsScreenViewState() = MutableStateFlow(
         AnimalFactsScreenViewState(
             text = "Loading...",
+            backButtonViewState = BackButtonViewState(
+                onClick = {
+                    viewModelScope.launch {
+                        _navigateUpFlow.emit(Unit)
+                    }
+                }
+            )
         )
     )
 

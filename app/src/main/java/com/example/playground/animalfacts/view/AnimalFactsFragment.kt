@@ -10,11 +10,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.playground.PlaygroundApplication
 import com.example.playground.animalfacts.screen.AnimalFactsScreen
 import com.example.playground.animalfacts.viewmodel.AnimalFactsViewModel
 import com.example.playground.shared.ui.theme.PlaygroundTheme
 import com.example.playground.shared.viewmodels.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AnimalFactsFragment: Fragment() {
@@ -47,6 +53,17 @@ class AnimalFactsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.onViewCreated()
+        observe()
+    }
+
+    private fun observe() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateUp.collectLatest {
+                    findNavController().popBackStack()
+                }
+            }
+        }
     }
 }
 

@@ -6,5 +6,6 @@
 
     <!--Animal Facts Screen-->
     <string name="animal_facts_title">Dog Facts</string>
-    <string name="animal_facts_api_error_message">API Error...!</string>
+    <string name="animal_facts_api_loading_message">Fetching…</string>
+    <string name="animal_facts_api_error_message">API Error…!</string>
 </resources>

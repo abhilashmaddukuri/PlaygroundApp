@@ -84,12 +84,18 @@ fun AnimalFactsError(modifier: Modifier = Modifier) {
 
 @Composable
 fun AnimalFactsLoading(modifier: Modifier = Modifier) {
-    CircularProgressIndicator(
-        modifier = modifier
-            .size(64.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-    )
+    Column(modifier = modifier.background(Color.White)) {
+        CircularProgressIndicator(
+            modifier = modifier
+                .size(64.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+        Text(
+            modifier = Modifier.padding(top = 10.dp),
+            text = stringResource(id = R.string.animal_facts_api_loading_message),
+        )
+    }
 }
 
 @Composable

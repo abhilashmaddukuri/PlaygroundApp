@@ -30,7 +30,7 @@ class AnimalFactsViewModel @Inject constructor(
 
     private fun buildAnimalFactsScreenViewState() = MutableStateFlow(
         AnimalFactsScreenViewState(
-            text = "Loading...",
+            isLoading = true,
             backButtonViewState = BackButtonViewState(
                 onClick = {
                     viewModelScope.launch {
@@ -46,7 +46,9 @@ class AnimalFactsViewModel @Inject constructor(
             val animalFacts = animalDataProvider.getAnimalFacts()
             _animalFactsScreenViewStateFlow.update {
                 it.copy(
-                    text = animalFacts.facts.firstOrNull() ?: "No response from internet"
+                    isLoading = false,
+                    isError = animalFacts.success.not(),
+                    text = animalFacts.facts.firstOrNull(),
                 )
             }
             print(animalFacts)

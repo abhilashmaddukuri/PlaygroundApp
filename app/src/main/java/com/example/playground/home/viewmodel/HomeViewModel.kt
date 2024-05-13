@@ -1,5 +1,6 @@
 package com.example.playground.home.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playground.R
@@ -14,21 +15,22 @@ import javax.inject.Inject
 /*
 * ViewModel for Home Screen
 * */
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val application: Application,
+) : ViewModel() {
 
     private val _homeScreenViewStateFlow: MutableStateFlow<HomeScreenViewState> =
         buildHomeScreenViewState()
     val homeScreenViewStateFlow: StateFlow<HomeScreenViewState>
         get() = _homeScreenViewStateFlow
 
-    private val _navigateToDestinationFlow: MutableSharedFlow<Int> =
-        MutableSharedFlow()
+    private val _navigateToDestinationFlow: MutableSharedFlow<Int> = MutableSharedFlow()
     val navigateToDestinationFlow: SharedFlow<Int>
         get() = _navigateToDestinationFlow
 
     private fun buildHomeScreenViewState() = MutableStateFlow(
         HomeScreenViewState(
-            buttonText = "Animal Facts",
+            buttonText = application.getString(R.string.home_dog_facts),
             buttonClick = {
                 viewModelScope.launch {
                     _navigateToDestinationFlow.emit(R.id.action_home_to_animal_facts)

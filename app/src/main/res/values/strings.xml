@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Playground App</string>
 
-    <!--Animal Facts-->
-    <string name="animal_facts_title">Animal Facts</string>
+    <!--Home Screen-->
+    <string name="home_dog_facts">Dog Facts</string>
+
+    <!--Animal Facts Screen-->
+    <string name="animal_facts_title">Dog Facts</string>
+    <string name="animal_facts_api_error_message">API Error...!</string>
 </resources>

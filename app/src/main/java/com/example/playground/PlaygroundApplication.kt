@@ -20,7 +20,9 @@ class PlaygroundApplication: Application() {
         animalDataProvider = DefaultAnimalDataProvider(animalAPIService)
 
         val playgroundAppModule = PlaygroundAppModule(
-            animalDataProvider
+            application = this,
+            context = this.applicationContext,
+            animalDataProvider = animalDataProvider,
         )
 
         appComponent = DaggerApplicationComponent

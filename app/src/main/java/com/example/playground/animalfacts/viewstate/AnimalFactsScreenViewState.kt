@@ -8,7 +8,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 * ViewState for Animal Facts
 * */
 data class AnimalFactsScreenViewState(
-    val text: String,
+    val isLoading: Boolean = true,
+    val isError: Boolean = false,
+    val text: String? = null,
     val backButtonViewState: BackButtonViewState,
 )
 

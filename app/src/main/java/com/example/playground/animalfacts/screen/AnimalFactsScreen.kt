@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -34,32 +37,73 @@ object AnimalFactsScreenValues {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimalFactsScreen(animalFactsScreenViewState: AnimalFactsScreenViewState) {
+fun AnimalFactsScreen(viewState: AnimalFactsScreenViewState) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.animal_facts_title)) },
                 navigationIcon = {
-                    IconButton(onClick = animalFactsScreenViewState.backButtonViewState.onClick) {
+                    IconButton(onClick = viewState.backButtonViewState.onClick) {
                         Icon(
-                            imageVector = animalFactsScreenViewState.backButtonViewState.icon,
-                            contentDescription = animalFactsScreenViewState.backButtonViewState.contentDescription
+                            imageVector = viewState.backButtonViewState.icon,
+                            contentDescription = viewState.backButtonViewState.contentDescription
                         )
                     }
                 }
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color.White)
-                .wrapContentSize(Alignment.Center),
-        ) {
+        val modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+            .background(Color.White)
+            .wrapContentSize(Alignment.Center)
+        if (viewState.isLoading) {
+            AnimalFactsLoading(
+                modifier = modifier
+            )
+        } else if (viewState.isError) {
+            AnimalFactsError(modifier)
+        }else {
+            AnimalFactsContainer(
+                modifier = modifier,
+                viewState = viewState,
+            )
+        }
+    }
+}
+
+@Composable
+fun AnimalFactsError(modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier.padding(textPaddingValues),
+        text = stringResource(id = R.string.animal_facts_api_error_message),
+        color = Color.Red
+    )
+}
+
+@Composable
+fun AnimalFactsLoading(modifier: Modifier = Modifier) {
+    CircularProgressIndicator(
+        modifier = modifier
+            .size(64.dp),
+        color = MaterialTheme.colorScheme.secondary,
+        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+    )
+}
+
+@Composable
+fun AnimalFactsContainer(
+    modifier: Modifier = Modifier,
+    viewState: AnimalFactsScreenViewState,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        viewState.text?.let {
             Text(
                 modifier = Modifier.padding(textPaddingValues),
-                text = animalFactsScreenViewState.text
+                text = it
             )
         }
     }
@@ -67,11 +111,36 @@ fun AnimalFactsScreen(animalFactsScreenViewState: AnimalFactsScreenViewState) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+private fun AnimalFactsPreview() {
     PlaygroundTheme {
         AnimalFactsScreen(
             AnimalFactsScreenViewState(
-                "Animal Fact",
+                isLoading = false,
+                isError = false,
+                text = "Animal Fact",
+                backButtonViewState = BackButtonViewState(onClick = {})
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AnimalFactsLoaderPreview() {
+    PlaygroundTheme {
+        AnimalFactsLoading()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AnimalFactsErrorPreview() {
+    PlaygroundTheme {
+        AnimalFactsScreen(
+            AnimalFactsScreenViewState(
+                isLoading = false,
+                isError = true,
+                text = null,
                 backButtonViewState = BackButtonViewState(onClick = {})
             )
         )

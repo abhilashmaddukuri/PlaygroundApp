@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -43,7 +43,7 @@ class AnimalFactsFragment: Fragment() {
             .apply {
                 setContent {
                     PlaygroundTheme {
-                        val viewState by viewModel.animalFactsScreenViewStateFlow.collectAsState()
+                        val viewState by viewModel.animalFactsScreenViewStateFlow.collectAsStateWithLifecycle()
                         AnimalFactsScreen(viewState)
                     }
                 }

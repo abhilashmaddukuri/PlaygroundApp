@@ -8,7 +8,9 @@ import com.example.playground.home.viewstate.HomeScreenViewState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +24,11 @@ class HomeViewModel @Inject constructor(
     private val _homeScreenViewStateFlow: MutableStateFlow<HomeScreenViewState> =
         buildHomeScreenViewState()
     val homeScreenViewStateFlow: StateFlow<HomeScreenViewState>
-        get() = _homeScreenViewStateFlow
+        get() = _homeScreenViewStateFlow.stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5000),
+            initialValue = _homeScreenViewStateFlow.value,
+        )
 
     private val _navigateToDestinationFlow: MutableSharedFlow<Int> = MutableSharedFlow()
     val navigateToDestinationFlow: SharedFlow<Int>

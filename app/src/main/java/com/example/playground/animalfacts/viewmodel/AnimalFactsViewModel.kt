@@ -9,7 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,15 +20,22 @@ class AnimalFactsViewModel @Inject constructor(
     private val animalDataProvider: AnimalDataProvider
 ) : ViewModel() {
 
+    companion object {
+        private const val DELAY_STOP_TIMEOUT_IN_MILLIS = 5000L
+    }
+
     private val _animalFactsScreenViewStateFlow: MutableStateFlow<AnimalFactsScreenViewState> =
         buildAnimalFactsScreenViewState()
     val animalFactsScreenViewStateFlow: StateFlow<AnimalFactsScreenViewState>
-        get() = _animalFactsScreenViewStateFlow
+        get() = _animalFactsScreenViewStateFlow.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(DELAY_STOP_TIMEOUT_IN_MILLIS),
+            initialValue = _animalFactsScreenViewStateFlow.value,
+        )
 
     private val _navigateUpFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
     val navigateUp: SharedFlow<Unit>
         get() = _navigateUpFlow
-
 
     private fun buildAnimalFactsScreenViewState() = MutableStateFlow(
         AnimalFactsScreenViewState(

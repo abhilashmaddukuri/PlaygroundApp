@@ -21,12 +21,16 @@ class HomeViewModel @Inject constructor(
     private val application: Application,
 ) : ViewModel() {
 
+    companion object {
+        private const val DELAY_STOP_TIMEOUT_IN_MILLIS = 5000L
+    }
+
     private val _homeScreenViewStateFlow: MutableStateFlow<HomeScreenViewState> =
         buildHomeScreenViewState()
     val homeScreenViewStateFlow: StateFlow<HomeScreenViewState>
         get() = _homeScreenViewStateFlow.stateIn(
             scope = viewModelScope,
-            started = WhileSubscribed(5000),
+            started = WhileSubscribed(DELAY_STOP_TIMEOUT_IN_MILLIS),
             initialValue = _homeScreenViewStateFlow.value,
         )
 

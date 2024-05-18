@@ -20,12 +20,16 @@ class AnimalFactsViewModel @Inject constructor(
     private val animalDataProvider: AnimalDataProvider
 ) : ViewModel() {
 
+    companion object {
+        private const val DELAY_STOP_TIMEOUT_IN_MILLIS = 5000L
+    }
+
     private val _animalFactsScreenViewStateFlow: MutableStateFlow<AnimalFactsScreenViewState> =
         buildAnimalFactsScreenViewState()
     val animalFactsScreenViewStateFlow: StateFlow<AnimalFactsScreenViewState>
         get() = _animalFactsScreenViewStateFlow.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(DELAY_STOP_TIMEOUT_IN_MILLIS),
             initialValue = _animalFactsScreenViewStateFlow.value,
         )
 

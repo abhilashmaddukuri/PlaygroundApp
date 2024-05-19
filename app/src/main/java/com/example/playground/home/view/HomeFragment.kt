@@ -9,18 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.playground.PlaygroundApplication
 import com.example.playground.home.screen.HomeScreen
 import com.example.playground.home.viewmodel.HomeViewModel
+import com.example.playground.shared.core.collectLatestWhenStarted
 import com.example.playground.shared.ui.theme.PlaygroundTheme
 import com.example.playground.shared.viewmodels.ViewModelFactory
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {
@@ -56,12 +52,8 @@ class HomeFragment: Fragment() {
     }
 
     private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToDestinationFlow.collectLatest { destination ->
-                    findNavController().navigate(destination)
-                }
-            }
+        collectLatestWhenStarted(viewModel.navigateToDestinationFlow) { destination ->
+            findNavController().navigate(destination)
         }
     }
 }

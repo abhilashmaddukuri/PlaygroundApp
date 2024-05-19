@@ -6,6 +6,9 @@
 
     <!--Animal Facts Screen-->
     <string name="animal_facts_title">Dog Facts</string>
-    <string name="animal_facts_api_loading_message">Fetching…</string>
+    <string name="animal_facts_back_button_content_desc">Back</string>
+    <string name="animal_facts_refresh_icon_content_desc">Refresh Fact</string>
     <string name="animal_facts_api_error_message">API Error…!</string>
+    <string name="animal_facts_refresh_text">Refresh Fact</string>
+
 </resources>

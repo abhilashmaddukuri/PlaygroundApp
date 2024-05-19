@@ -1,10 +1,12 @@
 package com.example.playground.animalfacts.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playground.R
 import com.example.playground.animalfacts.viewstate.AnimalFactsScreenViewState
-import com.example.playground.animalfacts.viewstate.BackButtonViewState
 import com.example.playground.dataprovider.AnimalDataProvider
+import com.example.playground.shared.view.viewstate.PlaygroundIconButtonViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AnimalFactsViewModel @Inject constructor(
+    private val application: Application,
     private val animalDataProvider: AnimalDataProvider
 ) : ViewModel() {
 
@@ -37,30 +40,56 @@ class AnimalFactsViewModel @Inject constructor(
     val navigateUp: SharedFlow<Unit>
         get() = _navigateUpFlow
 
+    fun onViewCreated() {
+        fetchNewFact()
+    }
+
     private fun buildAnimalFactsScreenViewState() = MutableStateFlow(
         AnimalFactsScreenViewState(
             isLoading = true,
-            backButtonViewState = BackButtonViewState(
+            backButtonViewState = PlaygroundIconButtonViewState(
+                icon = R.drawable.ic_back,
+                contentDescription = application.getString(R.string.animal_facts_back_button_content_desc),
                 onClick = {
                     viewModelScope.launch {
                         _navigateUpFlow.emit(Unit)
                     }
                 }
+            ),
+            refreshButtonViewState = PlaygroundIconButtonViewState(
+                icon = R.drawable.ic_refresh,
+                contentDescription = application.getString(R.string.animal_facts_refresh_icon_content_desc),
+                isEnabled = false,
+                onClick = {
+                    fetchNewFact()
+                }
             )
         )
     )
 
-    fun onViewCreated() {
+    private fun fetchNewFact() {
         viewModelScope.launch(Dispatchers.IO) {
+            showLoading()
             val animalFacts = animalDataProvider.getAnimalFacts()
             _animalFactsScreenViewStateFlow.update {
                 it.copy(
                     isLoading = false,
+                    refreshButtonViewState = it.refreshButtonViewState.copy(isEnabled = true),
                     isError = animalFacts.success.not(),
-                    text = animalFacts.facts.firstOrNull(),
+                    fact = animalFacts.facts.firstOrNull(),
                 )
             }
-            print(animalFacts)
+        }
+    }
+
+    private fun showLoading() {
+        viewModelScope.launch {
+            _animalFactsScreenViewStateFlow.update {
+                it.copy(
+                    isLoading = true,
+                    refreshButtonViewState = it.refreshButtonViewState.copy(isEnabled = false),
+                )
+            }
         }
     }
 }

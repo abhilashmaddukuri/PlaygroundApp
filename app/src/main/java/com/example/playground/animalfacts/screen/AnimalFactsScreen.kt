@@ -4,13 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,19 +19,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.playground.R
-import com.example.playground.animalfacts.screen.AnimalFactsScreenValues.textPaddingValues
+import com.example.playground.animalfacts.screen.AnimalFactsScreenValues.containerPaddingValues
+import com.example.playground.animalfacts.screen.AnimalFactsScreenValues.progressIndicatorSize
 import com.example.playground.animalfacts.viewstate.AnimalFactsScreenViewState
-import com.example.playground.animalfacts.viewstate.BackButtonViewState
 import com.example.playground.shared.ui.theme.PlaygroundTheme
+import com.example.playground.shared.view.screen.PlaygroundIconButton
+import com.example.playground.shared.view.viewstate.PlaygroundIconButtonViewState
 
 /*
 * Composable Screen for Animal Facts
 * */
 object AnimalFactsScreenValues {
-    val textPaddingValues = PaddingValues(horizontal = 20.dp)
+    val containerPaddingValues = PaddingValues(horizontal = 20.dp)
+    val progressIndicatorSize = 64.dp
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,32 +46,25 @@ fun AnimalFactsScreen(viewState: AnimalFactsScreenViewState) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.animal_facts_title)) },
                 navigationIcon = {
-                    IconButton(onClick = viewState.backButtonViewState.onClick) {
-                        Icon(
-                            imageVector = viewState.backButtonViewState.icon,
-                            contentDescription = viewState.backButtonViewState.contentDescription
-                        )
-                    }
+                    PlaygroundIconButton(viewState = viewState.backButtonViewState)
+                },
+                actions = {
+                    PlaygroundIconButton(viewState = viewState.refreshButtonViewState)
                 }
             )
         }
     ) { innerPadding ->
         val modifier = Modifier
             .padding(innerPadding)
-            .fillMaxSize()
             .background(Color.White)
+            .fillMaxSize()
             .wrapContentSize(Alignment.Center)
         if (viewState.isLoading) {
-            AnimalFactsLoading(
-                modifier = modifier
-            )
+            AnimalFactsLoading(modifier = modifier)
         } else if (viewState.isError) {
-            AnimalFactsError(modifier)
-        }else {
-            AnimalFactsContainer(
-                modifier = modifier,
-                viewState = viewState,
-            )
+            AnimalFactsError(modifier = modifier)
+        } else {
+            AnimalFactsContainer(modifier = modifier, viewState = viewState)
         }
     }
 }
@@ -76,7 +72,7 @@ fun AnimalFactsScreen(viewState: AnimalFactsScreenViewState) {
 @Composable
 fun AnimalFactsError(modifier: Modifier = Modifier) {
     Text(
-        modifier = modifier.padding(textPaddingValues),
+        modifier = modifier.padding(containerPaddingValues),
         text = stringResource(id = R.string.animal_facts_api_error_message),
         color = Color.Red
     )
@@ -84,16 +80,12 @@ fun AnimalFactsError(modifier: Modifier = Modifier) {
 
 @Composable
 fun AnimalFactsLoading(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.background(Color.White)) {
+    Column(modifier = modifier) {
         CircularProgressIndicator(
             modifier = modifier
-                .size(64.dp),
+                .size(progressIndicatorSize),
             color = MaterialTheme.colorScheme.secondary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
-        Text(
-            modifier = Modifier.padding(top = 10.dp),
-            text = stringResource(id = R.string.animal_facts_api_loading_message),
         )
     }
 }
@@ -104,12 +96,16 @@ fun AnimalFactsContainer(
     viewState: AnimalFactsScreenViewState,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(containerPaddingValues),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        viewState.text?.let {
+        viewState.fact?.let { fact ->
             Text(
-                modifier = Modifier.padding(textPaddingValues),
-                text = it
+                modifier = Modifier.fillMaxWidth(),
+                text = fact,
+                textAlign = TextAlign.Center,
+                color = Color.DarkGray
             )
         }
     }
@@ -121,10 +117,17 @@ private fun AnimalFactsPreview() {
     PlaygroundTheme {
         AnimalFactsScreen(
             AnimalFactsScreenViewState(
-                isLoading = false,
+                isLoading = true,
                 isError = false,
-                text = "Animal Fact",
-                backButtonViewState = BackButtonViewState(onClick = {})
+                fact = "Animal Fact",
+                backButtonViewState = PlaygroundIconButtonViewState(
+                    icon = R.drawable.ic_back,
+                    onClick = {}
+                ),
+                refreshButtonViewState = PlaygroundIconButtonViewState(
+                    icon = R.drawable.ic_refresh,
+                    onClick = {}
+                )
             )
         )
     }
@@ -146,8 +149,15 @@ private fun AnimalFactsErrorPreview() {
             AnimalFactsScreenViewState(
                 isLoading = false,
                 isError = true,
-                text = null,
-                backButtonViewState = BackButtonViewState(onClick = {})
+                fact = null,
+                backButtonViewState = PlaygroundIconButtonViewState(
+                    icon = R.drawable.ic_back,
+                    onClick = {}
+                ),
+                refreshButtonViewState = PlaygroundIconButtonViewState(
+                    icon = R.drawable.ic_refresh,
+                    onClick = {}
+                )
             )
         )
     }
